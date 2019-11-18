@@ -4,7 +4,8 @@ import 'dart:convert';
 import 'package:weather_app/models/weather_data.dart';
 import 'package:weather_app/utils/configure.dart' as configure;
 
-//Api-Key : 75816b81c0e1be6fe46cdab220700cea
+String _apiKeyP = "14316831-b526440549b4ee06a100d780d";
+String _apiKeyW = "75816b81c0e1be6fe46cdab220700cea";
 
 WeatherData _parseWeatherCityInformation(String responseBody) {
   WeatherData _weather = WeatherData();
@@ -26,7 +27,7 @@ Future<WeatherData> getWeatherCityInformation(
         try {
           var res = await http.get(
             Uri.encodeFull(
-                "https://api.openweathermap.org/data/2.5/weather?q=$city,$code&appid=43ea6baaad7663dc17637e22ee6f78f2"),
+                "https://api.openweathermap.org/data/2.5/weather?q=$city,$code&appid=$_apiKeyW"),
           );
           return compute(
               _parseWeatherCityInformation, utf8.decode(res.bodyBytes));
@@ -38,28 +39,28 @@ Future<WeatherData> getWeatherCityInformation(
       }
     });
 
-String _parsePhotos(String responseBody) {
-  String photo = "prueba";
+String _parsePhoto(String responseBody) {
+  String _photo;
   try {
     var data = json.decode(responseBody);
-    print(data);
-    //photo = data[''];
+    //print(data);
+    _photo = data['hits'][0]['largeImageURL'].toString();
   } catch (e) {
     print('Excepcion \n $e');
   }
-  return photo;
+  return _photo;
 }
 
-Future<String> getImageNetwork() async =>
+Future<String> getImageNetwork({String content="city"}) async =>
     configure.checkInternet().then((bool conected) async {
       if (conected) {
         try {
           var res = await http.get(
             Uri.encodeFull(
-                "https://pixabay.com/api/?key=14316831-b526440549b4ee06a100d780d&q=yellow+flowers&image_type=photo"),
+                "https://pixabay.com/api/?key=$_apiKeyP&q=$content&image_type=photo&per_page=3"),
           );
-          print(res.statusCode);
-          return compute(_parsePhotos, utf8.decode(res.bodyBytes));
+          //print(res.statusCode);
+          return compute(_parsePhoto, utf8.decode(res.bodyBytes));
         } catch (e) {
           return null;
         }

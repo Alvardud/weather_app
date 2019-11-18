@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter/widgets.dart';
+
 Future<bool> checkInternet() async {
   try {
     final res = await InternetAddress.lookup('google.com');
@@ -11,4 +13,8 @@ Future<bool> checkInternet() async {
   } on SocketException catch(_) {
     return false;
   }
+}
+
+Color convertColor(String x) {
+  return Color(int.parse(x.substring(1, 7), radix: 16) + 0xFF000000);
 }

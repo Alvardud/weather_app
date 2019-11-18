@@ -3,6 +3,7 @@ import 'package:weather_app/data/constants.dart' as constant;
 import 'package:weather_app/models/weather_data.dart';
 import 'package:weather_app/ui/widgets/lottie_animation.dart';
 import 'package:weather_app/utils/http_request.dart' as request;
+import 'package:weather_app/utils/configure.dart'as configure;
 
 class Home extends StatefulWidget {
   @override
@@ -10,18 +11,34 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: configure.convertColor("#0D0D0D"),
       body: Stack(children: <Widget>[
         Container(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
-          color: Colors.white,
-          /*: FutureBuilder(
-            future: ,
-          ),*/
+          child: FutureBuilder(
+            future: request.getImageNetwork(content: 'la paz'),
+            builder: (context, content) {
+              if (!content.hasData) {
+                return SizedBox();
+              } else {
+                return Stack(children: [
+                  Container(
+                      height: MediaQuery.of(context).size.height,
+                      width: MediaQuery.of(context).size.width,
+                      child: Image.network(content.data, fit: BoxFit.cover)),
+                  Container(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.black.withOpacity(0.85),
+                  )
+                ]);
+              }
+            },
+          ),
         ),
         Column(
           children: <Widget>[
@@ -123,11 +140,14 @@ class MainData extends StatelessWidget {
         children: <Widget>[
           Text(
             "${weatherData.main.temp.round()}°" ?? "null",
-            style: TextStyle(fontSize: 72.0, fontWeight: FontWeight.w300),
+            style: TextStyle(
+                fontSize: 72.0,
+                fontWeight: FontWeight.w300,
+                color: Colors.white),
           ),
           Text(
             "${weatherData.weather[0].description[0].toUpperCase()}${weatherData.weather[0].description.substring(1)}",
-            style: TextStyle(fontSize: 28.0),
+            style: TextStyle(fontSize: 28.0, color: Colors.white),
           ),
           SizedBox(
             height: 8.0,
@@ -135,31 +155,35 @@ class MainData extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Icon(weatherData.main.temp > weatherData.main.tempMin
-                  ? Icons.arrow_downward
-                  : Icons.arrow_upward),
+              Icon(
+                  weatherData.main.temp > weatherData.main.tempMin
+                      ? Icons.arrow_downward
+                      : Icons.arrow_upward,
+                  color: Colors.white),
               Text(
                 "${weatherData.main.tempMin.round()}°",
-                style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w300),
+                style: TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.w300,
+                    color: Colors.white),
               ),
               SizedBox(
                 width: 8.0,
               ),
-              Icon(weatherData.main.temp > weatherData.main.tempMax
-                  ? Icons.arrow_downward
-                  : Icons.arrow_upward),
+              Icon(
+                  weatherData.main.temp > weatherData.main.tempMax
+                      ? Icons.arrow_downward
+                      : Icons.arrow_upward,
+                  color: Colors.white),
               Text(
                 "${weatherData.main.tempMax.round()}°",
-                style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w300),
+                style: TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.w300,
+                    color: Colors.white),
               ),
             ],
           ),
-          RaisedButton(
-            child: Text('Tomar Foto'),
-            onPressed: ()async{
-              await request.getImageNetwork();
-            },
-          )
         ],
       ),
     );

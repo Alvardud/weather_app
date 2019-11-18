@@ -5,7 +5,7 @@ import 'package:weather_app/ui/pages/home.dart';
 void main() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.dark
+    statusBarIconBrightness: Brightness.light
   ));
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitDown,
@@ -24,11 +24,11 @@ class MyApp extends StatelessWidget {
         textTheme: TextTheme(
           title: TextStyle(
             fontSize: 28.0,
-            color: Colors.black
+            color: Colors.white
           ),
           subtitle: TextStyle(
             fontSize: 16.0,
-            color: Colors.black45
+            color: Colors.white54
           )
         ),
         primarySwatch: Colors.blue,
