@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 class LottieAnimation extends StatefulWidget {
-
-  String animation;
-  LottieAnimation({this.animation});
+  final String animation;
+  final double size;
+  LottieAnimation({this.animation, this.size = 150.0});
 
   @override
   _LottieAnimationState createState() => _LottieAnimationState();
@@ -23,14 +23,12 @@ class _LottieAnimationState extends State<LottieAnimation>
   @override
   void initState() {
     super.initState();
-
     _repeat = true;
     _controller = AnimationController(
       duration: const Duration(milliseconds: 1),
       vsync: this,
     );
-    loadAsset(widget.animation)
-        .then((LottieComposition composition) {
+    loadAsset(widget.animation).then((LottieComposition composition) {
       setState(() {
         _composition = composition;
         _controller.reset();
@@ -74,15 +72,12 @@ class _LottieAnimationState extends State<LottieAnimation>
   Widget build(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Lottie(
-            composition: _composition,
-            size: const Size(150.0, 150.0),
-            controller: _controller,
-          ),
-        ],
+      child: Center(
+        child: Lottie(
+          composition: _composition,
+          size: Size(widget.size, widget.size),
+          controller: _controller,
+        ),
       ),
     );
   }

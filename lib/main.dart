@@ -29,6 +29,10 @@ class MyApp extends StatelessWidget {
           subtitle: TextStyle(
             fontSize: 16.0,
             color: Colors.white54
+          ),
+          body1: TextStyle(
+            color: Colors.white,
+            fontSize: 16.0
           )
         ),
         primarySwatch: Colors.blue,

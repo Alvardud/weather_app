@@ -5,7 +5,7 @@ class WeatherData {
   Main main;
   Wind wind;
   Clouds clouds;
-  double dt;
+  dynamic dt;
   Sys sys;
   int timezone;
   int id;
@@ -39,7 +39,7 @@ class WeatherData {
     wind = json['wind'] != null ? new Wind.fromJson(json['wind']) : null;
     clouds =
         json['clouds'] != null ? new Clouds.fromJson(json['clouds']) : null;
-    dt = json['dt'].toDouble();
+    dt = json['dt'];
     sys = json['sys'] != null ? new Sys.fromJson(json['sys']) : null;
     timezone = json['timezone'];
     id = json['id'];
@@ -150,14 +150,14 @@ class Main {
 }
 
 class Wind {
-  double speed;
-  double deg;
+  dynamic speed;
+  dynamic deg;
 
   Wind({this.speed, this.deg});
 
   Wind.fromJson(Map<String, dynamic> json) {
     speed = json['speed'];
-    deg = json['deg'].toDouble();
+    deg = json['deg'];
   }
 
   Map<String, dynamic> toJson() {

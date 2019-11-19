@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:weather_app/data/constants.dart' as constant;
 import 'package:weather_app/models/weather_data.dart';
 import 'package:weather_app/ui/widgets/lottie_animation.dart';
+import 'package:weather_app/ui/widgets/search.dart';
 import 'package:weather_app/utils/http_request.dart' as request;
-import 'package:weather_app/utils/configure.dart'as configure;
+import 'package:weather_app/utils/configure.dart' as configure;
 
 class Home extends StatefulWidget {
   @override
@@ -20,7 +21,8 @@ class _HomeState extends State<Home> {
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           child: FutureBuilder(
-            future: request.getImageNetwork(content: 'la paz'),
+            //future: request.getImageNetwork(content: constant.exampleUser.city),
+            future: request.getImageNetwork(content: "scattered clouds"),
             builder: (context, content) {
               if (!content.hasData) {
                 return SizedBox();
@@ -33,7 +35,7 @@ class _HomeState extends State<Home> {
                   Container(
                     height: MediaQuery.of(context).size.height,
                     width: MediaQuery.of(context).size.width,
-                    color: Colors.black.withOpacity(0.85),
+                    color: Colors.black.withOpacity(0.4),
                   )
                 ]);
               }
@@ -49,6 +51,7 @@ class _HomeState extends State<Home> {
             )
           ],
         ),
+        Search()
       ]),
     );
   }
@@ -78,6 +81,7 @@ class _BodyState extends State<Body> {
     return Row(
       children: <Widget>[
         Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text('Hello ${constant.exampleUser.name}',
@@ -100,28 +104,67 @@ class _BodyState extends State<Body> {
       height: MediaQuery.of(context).size.height -
           MediaQuery.of(context).padding.top -
           32.0,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          _header(context),
-          Expanded(
-            child: FutureBuilder(
+      child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        scrollDirection: Axis.vertical,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(height: 150.0, child: _header(context)),
+            FutureBuilder(
               future: request.getWeatherCityInformation(
                   city: constant.exampleUser.city,
                   code: constant.exampleUser.codeCountry),
               builder: (context, content) {
                 if (!content.hasData) {
-                  return Center(
-                      child: Wrap(
-                    children: <Widget>[CircularProgressIndicator()],
-                  ));
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height -
+                        MediaQuery.of(context).padding.top -
+                        182.0,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        LottieAnimation(
+                          animation: constant.lottieResources['loading'],
+                        ),
+                        SizedBox(
+                          height: 8.0,
+                        ),
+                        Text('Loading...',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w300,
+                            ))
+                      ],
+                    ),
+                  );
                 }
                 _weatherData = content.data;
                 return MainData(weatherData: _weatherData);
               },
             ),
-          )
-        ],
+            SizedBox(
+              height: 16.0,
+            ),
+            Divider(
+              color: Colors.white,
+              height: 16.0,
+              indent: 32.0,
+              endIndent: 32.0,
+              thickness: 2.0,
+            ),
+            /*Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: Text(
+                'Weather in the world',
+                style: Theme.of(context).textTheme.body1,
+              ),
+            ),
+            WeatherMap(),*/
+          ],
+        ),
       ),
     );
   }

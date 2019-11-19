@@ -8,11 +8,13 @@ String _apiKeyP = "14316831-b526440549b4ee06a100d780d";
 String _apiKeyW = "75816b81c0e1be6fe46cdab220700cea";
 
 WeatherData _parseWeatherCityInformation(String responseBody) {
-  WeatherData _weather = WeatherData();
+  WeatherData _weather;
   try {
-    var data = json.decode(responseBody);
-    //print(data);
-    _weather = WeatherData.fromJson(data);
+    //Future.delayed(Duration(seconds: 3), () {
+      var data = json.decode(responseBody);
+      //print(data);
+      _weather = WeatherData.fromJson(data);
+    //});
   } catch (e) {
     print('Excepcion \n $e');
   }
@@ -22,7 +24,6 @@ WeatherData _parseWeatherCityInformation(String responseBody) {
 Future<WeatherData> getWeatherCityInformation(
         {@required String city, @required String code}) async =>
     configure.checkInternet().then((bool conected) async {
-      //TODO: change appid
       if (conected) {
         try {
           var res = await http.get(
@@ -51,7 +52,7 @@ String _parsePhoto(String responseBody) {
   return _photo;
 }
 
-Future<String> getImageNetwork({String content="city"}) async =>
+Future<String> getImageNetwork({String content = "city"}) async =>
     configure.checkInternet().then((bool conected) async {
       if (conected) {
         try {
