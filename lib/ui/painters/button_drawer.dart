@@ -1,6 +1,6 @@
 import 'package:flutter/rendering.dart';
 import 'package:weather_app/utils/configure.dart' as configure;
-
+  
 class ButtonPaint extends CustomPainter{
   @override
   void paint(Canvas canvas, Size size) {
@@ -10,19 +10,19 @@ class ButtonPaint extends CustomPainter{
 
     var path = Path()
     ..quadraticBezierTo(
-      size.width*0.1,
+      size.width*0.05,
       size.height * 0.15,
-      size.width*0.4,
-      size.height * 0.3,
+      size.width*0.13,
+      size.height * 0.33,
     )
     ..quadraticBezierTo(
-      size.width*0.75,
+      size.width*0.18,
       size.height * 0.50,
-      size.width*0.4,
-      size.height*0.7,
+      size.width*0.13,
+      size.height*0.66,
     )
     ..quadraticBezierTo(
-      size.width*0.1,
+      size.width*0.05,
       size.height * 0.85,
       size.width*0,
       size.height,

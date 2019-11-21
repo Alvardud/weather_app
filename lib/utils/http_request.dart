@@ -30,6 +30,9 @@ Future<WeatherData> getWeatherCityInformation(
             Uri.encodeFull(
                 "https://api.openweathermap.org/data/2.5/weather?q=$city,$code&appid=$_apiKeyW"),
           );
+          if(res.statusCode!=200){
+            return null;
+          }
           return compute(
               _parseWeatherCityInformation, utf8.decode(res.bodyBytes));
         } catch (e) {

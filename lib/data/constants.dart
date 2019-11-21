@@ -39,4 +39,11 @@ ConfigureUser exampleUser =
 
 String mapCloudy =
     "https://tile.openweathermap.org/map/clouds/{z}/{x}/{y}.png?appid=75816b81c0e1be6fe46cdab220700cea";
-  
+
+const Map<String, String> colores = {
+  "primary": "#011826",
+  "secundary": "#224459",
+  "tertiary": "#73A2BF",
+  "neutral": "#C2E0F2",
+  "accent": "#42778C"
+};

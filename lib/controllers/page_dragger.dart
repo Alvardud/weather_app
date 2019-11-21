@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'dart:async';
 
 class PageDragger extends StatefulWidget {
@@ -32,10 +32,11 @@ class _PageDraggerState extends State<PageDragger> {
 
   Widget build(BuildContext context) {
     return new GestureDetector(
-      onHorizontalDragStart: onDragStart,
+      onHorizontalDragStart: onDragStart,gnment.start,
+          children: <Widget>[
       onHorizontalDragUpdate: onDragUpdate,
       onHorizontalDragEnd: onDragEnd,
       child: widget.child,
     );
   }
-}
+}*/

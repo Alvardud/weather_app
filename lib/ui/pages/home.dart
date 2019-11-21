@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:weather_app/controllers/drawer_controller.dart';
 import 'package:weather_app/data/constants.dart' as constant;
 import 'package:weather_app/models/weather_data.dart';
 import 'package:weather_app/ui/widgets/lottie_animation.dart';
 import 'package:weather_app/ui/widgets/search.dart';
 import 'package:weather_app/utils/http_request.dart' as request;
 import 'package:weather_app/utils/configure.dart' as configure;
+import 'package:weather_app/ui/widgets/main_data_home.dart';
 
-class Home extends StatefulWidget {
-  @override
-  _HomeState createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
+class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,33 +39,19 @@ class _HomeState extends State<Home> {
             },
           ),
         ),
-        Column(
-          children: <Widget>[
-            SizedBox(height: MediaQuery.of(context).padding.top),
-            Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Body(),
-            )
-          ],
-        ),
-        Search()
+        Content()
       ]),
     );
   }
 }
 
-class Body extends StatefulWidget {
+class Content extends StatefulWidget {
   @override
-  _BodyState createState() => _BodyState();
+  _ContentState createState() => _ContentState();
 }
 
-class _BodyState extends State<Body> {
-  WeatherData _weatherData;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+class _ContentState extends State<Content> {
+  double scrollPercent = 0.0;
 
   String _getDate() {
     DateTime _now = DateTime.now();
@@ -78,156 +61,129 @@ class _BodyState extends State<Body> {
   }
 
   Widget _header(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text('Hello ${constant.exampleUser.name}',
-                style: Theme.of(context).textTheme.title),
-            Text(_getDate(), style: Theme.of(context).textTheme.subtitle),
-          ],
-        ),
-        Expanded(
-          child: LottieAnimation(
-            animation: constant.lottieWeather['night'],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Row(
+        children: <Widget>[
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text('Hello ${constant.exampleUser.name}',
+                  style: Theme.of(context).textTheme.title),
+              Text(_getDate(), style: Theme.of(context).textTheme.subtitle),
+            ],
           ),
-        ),
-      ],
+          Expanded(
+            child: LottieAnimation(
+              animation: constant.lottieWeather['night'],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height -
-          MediaQuery.of(context).padding.top -
-          32.0,
-      child: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        scrollDirection: Axis.vertical,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return Stack(
+      children: <Widget>[
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            SizedBox(height: MediaQuery.of(context).padding.top),
             SizedBox(height: 150.0, child: _header(context)),
-            FutureBuilder(
-              future: request.getWeatherCityInformation(
-                  city: constant.exampleUser.city,
-                  code: constant.exampleUser.codeCountry),
-              builder: (context, content) {
-                if (!content.hasData) {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height -
-                        MediaQuery.of(context).padding.top -
-                        182.0,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        LottieAnimation(
-                          animation: constant.lottieResources['loading'],
-                        ),
-                        SizedBox(
-                          height: 8.0,
-                        ),
-                        Text('Loading...',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.w300,
-                            ))
-                      ],
-                    ),
-                  );
-                }
-                _weatherData = content.data;
-                return MainData(weatherData: _weatherData);
-              },
-            ),
-            SizedBox(
-              height: 16.0,
-            ),
-            Divider(
-              color: Colors.white,
-              height: 16.0,
-              indent: 32.0,
-              endIndent: 32.0,
-              thickness: 2.0,
-            ),
-            /*Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: Text(
-                'Weather in the world',
-                style: Theme.of(context).textTheme.body1,
+            Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Body(
+                scrollPercent: scrollPercent,
               ),
-            ),
-            WeatherMap(),*/
+            )
           ],
         ),
-      ),
+        Search(
+          onScroll: (double scrollPercent) {
+            setState(() {
+              this.scrollPercent = scrollPercent;
+            });
+          },
+        )
+      ],
     );
   }
 }
 
-class MainData extends StatelessWidget {
-  final WeatherData weatherData;
-  MainData({this.weatherData});
+class Body extends StatelessWidget {
+  final double scrollPercent;
+  WeatherData _weatherData;
 
-  @override
-  Widget build(BuildContext context) {
+  Body({this.scrollPercent});
+
+  Widget _noData(BuildContext context) {
     return SizedBox(
-      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height -
+          MediaQuery.of(context).padding.top -
+          182.0,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Text(
-            "${weatherData.main.temp.round()}°" ?? "null",
-            style: TextStyle(
-                fontSize: 72.0,
-                fontWeight: FontWeight.w300,
-                color: Colors.white),
-          ),
-          Text(
-            "${weatherData.weather[0].description[0].toUpperCase()}${weatherData.weather[0].description.substring(1)}",
-            style: TextStyle(fontSize: 28.0, color: Colors.white),
+          LottieAnimation(
+            animation: constant.lottieResources['loading'],
           ),
           SizedBox(
             height: 8.0,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Icon(
-                  weatherData.main.temp > weatherData.main.tempMin
-                      ? Icons.arrow_downward
-                      : Icons.arrow_upward,
-                  color: Colors.white),
-              Text(
-                "${weatherData.main.tempMin.round()}°",
-                style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.w300,
-                    color: Colors.white),
-              ),
-              SizedBox(
-                width: 8.0,
-              ),
-              Icon(
-                  weatherData.main.temp > weatherData.main.tempMax
-                      ? Icons.arrow_downward
-                      : Icons.arrow_upward,
-                  color: Colors.white),
-              Text(
-                "${weatherData.main.tempMax.round()}°",
-                style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.w300,
-                    color: Colors.white),
-              ),
-            ],
-          ),
+          Text('Loading...',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20.0,
+                fontWeight: FontWeight.w300,
+              ))
         ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FractionalTranslation(
+      translation: Offset(scrollPercent*2.3, 0.0),
+          child: SizedBox(
+        height: MediaQuery.of(context).size.height -
+            MediaQuery.of(context).padding.top -
+            182.0,
+        child: FutureBuilder(
+          future: request.getWeatherCityInformation(
+              city: constant.exampleUser.city,
+              code: constant.exampleUser.codeCountry),
+          builder: (context, content) {
+            if (!content.hasData) {
+              return _noData(context);
+            }
+            _weatherData = content.data;
+            return SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  MainData(weatherData: _weatherData),
+                  SizedBox(
+                    height: 16.0,
+                  ),
+                  Divider(
+                    color: Colors.white,
+                    height: 16.0,
+                    indent: 32.0,
+                    endIndent: 32.0,
+                    thickness: 2.0,
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
