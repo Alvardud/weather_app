@@ -77,11 +77,17 @@ class _SearchState extends State<Search> with SingleTickerProviderStateMixin {
   }
 
   void _open() {
-    setState(() {});
+    setState(() {
+      scrollPercent = 0.5;
+      widget.onScroll(0.5);
+    });
   }
 
   void _close() {
-    setState(() {});
+    setState(() {
+      scrollPercent = 0.0;
+      widget.onScroll(0.0);
+    });
   }
 
   Widget _button(BuildContext context, int cardIndex, int cardCount,
@@ -104,10 +110,7 @@ class _SearchState extends State<Search> with SingleTickerProviderStateMixin {
                   onHorizontalDragUpdate: _onHorizontalDragUpdate,
                   onHorizontalDragEnd: _onHorizontalDragEnd,
                   onTap: () {
-                    print('presionado');
-                    setState(() {
-                      scrollPercent = -200.0;
-                    });
+                    _open();
                   },
                   behavior: HitTestBehavior.translucent,
                   child: Icon(
@@ -156,7 +159,7 @@ class _SearchState extends State<Search> with SingleTickerProviderStateMixin {
                     child: Center(
                       child: FlatButton(
                         onPressed: () {
-                          scrollPercent = 0.0;
+                          _close();
                         },
                         child: Text(
                           'Cerrar',
